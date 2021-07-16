@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const http = require('http');
 
-const { getTokenId, getToken, getTokenHeader, setToken, updateToken, deleteToken, refreshTokenId, extendTokenTime } = require('./index.js');
+const { getTokenId, getToken, getTokenHeader, setToken, updateToken, deleteToken, refreshTokenId, extendTokenTime } = require('nodejs-token-auth');
 
 app.get('/', (req, res) => {
     const tokenId = getTokenId();

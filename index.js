@@ -86,7 +86,7 @@ function cleanGarbageToken() {
         let tokenCreationTime = token.header.createdAt
         let currentTime = new Date().getTime()
 
-        if (token.body === {} && currentTime > tokenCreationTime + 600 * 1000) {
+        if (JSON.stringify(token.body) === JSON.stringify({}) && currentTime > tokenCreationTime + 600 * 1000) {
             deleteToken(key)
         }
         else if (currentTime > tokenCreationTime + token.header.maxAge * 1000) {

@@ -81,7 +81,6 @@ function extendTokenTime(key) {
 }
 
 function cleanGarbageToken() {
-    console.log('garbage called')
     tokenList.forEach((value, key) => {
         let token = tokenList.get(key)
         let tokenCreationTime = token.header.createdAt

@@ -4,7 +4,7 @@ let tokenList = new Map();
 
 function getTokenId() {
     let token = Buffer.from(uuidv4()).toString('base64')
-    tokenList.set(token, { header: { maxAge: 3600, createdAt: new Date().getTime() }, body: null })
+    tokenList.set(token, { header: { maxAge: 3600*24*365, createdAt: new Date().getTime() }, body: {} })
     return token
 }
 
@@ -87,7 +87,7 @@ function cleanGarbageToken() {
         let tokenCreationTime = token.header.createdAt
         let currentTime = new Date().getTime()
 
-        if (token.body === null && currentTime > tokenCreationTime + 600 * 1000) {
+        if (token.body === {} && currentTime > tokenCreationTime + 600 * 1000) {
             deleteToken(key)
         }
         else if (currentTime > tokenCreationTime + token.header.maxAge * 1000) {

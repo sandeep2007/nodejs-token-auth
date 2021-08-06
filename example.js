@@ -2,6 +2,10 @@ const express = require('express');
 
 const app = express();
 const http = require('http');
+const redis = require("redis");
+const redisClient = redis.createClient({
+    password: 'foobared'
+});
 
 const {
     getTokenId,
@@ -14,26 +18,28 @@ const {
     extendTokenTime,
     setTokenSavePath,
     getTokenSavePath,
-    tokenDriver
+    tokenDriver,
+    test
 } = require('nodejs-token-auth');
 
-app.get('/', (req, res) => {
-    tokenDriver('memory')
-    const tokenId = getTokenId();
-    setToken(tokenId, { id: 123, name: "user1" })
-    updateToken(tokenId, { email: 'user5@mail.com' })
+app.get('/', async (req, res) => {
+    tokenDriver('redis', { redisClient: redisClient })
 
-    // let newTokenId = refreshTokenId(tokenId)
+    const tokenId = await getTokenId();
+    await setToken(tokenId, { id: 123, name: "user1" })
+    await updateToken(tokenId, { email: 'user5@mail.com' })
+
+    let newTokenId = await refreshTokenId(tokenId)
     extendTokenTime(tokenId);
-    const tokenBody = getToken(tokenId)
-    const tokenHeader = getTokenHeader(tokenId)
-    // const deleteT = deleteToken(newTokenId)
+    const tokenBody = await getToken(newTokenId)
+    const tokenHeader = await getTokenHeader(newTokenId)
+    // const deleteT = await deleteToken(newTokenId)
 
     // setTokenSavePath('/temp-token')
     // const path = getTokenSavePath()
     // const tokenId = getTokenId();
     // console.log(path)
-    res.json([tokenId, tokenBody, tokenHeader]);
+    res.json([tokenId, newTokenId, tokenBody, tokenHeader]);
 })
 
 const httpServer = http.createServer(app);
